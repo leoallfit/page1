@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ALLFIT</title>
+  <meta id="meta-desc" name="description" content="" />
+  <meta id="og-title"  property="og:title" content="" />
+  <meta id="og-desc"   property="og:description" content="" />
+  <meta id="og-image"  property="og:image" content="" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💪</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css" />
+
+  <style>
+    /* ── Admin overlay ── */
+    #admin-overlay {
+      position: fixed; inset: 0; z-index: 99999;
+      display: none; align-items: center; justify-content: center;
+      background: rgba(10,15,28,0.75);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      animation: fadeIn .2s ease;
+    }
+    #admin-overlay.open { display: flex; }
+    @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+
+    #admin-shell {
+      position: relative;
+      width: calc(100vw - 32px); height: calc(100vh - 32px);
+      max-width: 1400px; max-height: 960px;
+      border-radius: 16px; overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.08);
+      animation: slideUp .25s ease;
+    }
+    @keyframes slideUp { from { transform:translateY(20px);opacity:0 } to { transform:translateY(0);opacity:1 } }
+
+    #admin-frame {
+      width: 100%; height: 100%;
+      border: none; display: block;
+      border-radius: 16px;
+    }
+
+    #admin-close-btn {
+      position: absolute; top: 14px; right: 14px; z-index: 10;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+      color: #fff; font-size: 14px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s;
+      backdrop-filter: blur(4px);
+    }
+    #admin-close-btn:hover { background: rgba(239,68,68,.7); }
+
+    /* hotspot invisible */
+    #admin-hotspot {
+      position: fixed; bottom: 0; left: 0;
+      width: 40px; height: 40px;
+      z-index: 99998; opacity: 0; cursor: default;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     PANEL ADMIN — capa oculta
+══════════════════════════════════════ -->
+<div id="admin-overlay">
+  <div id="admin-shell">
+    <button id="admin-close-btn" title="Cerrar panel">✕</button>
+    <iframe id="admin-frame" src="" title="ALLFIT Admin"></iframe>
+  </div>
+</div>
+
+<!-- Hotspot invisible — esquina inferior izquierda -->
+<div id="admin-hotspot"></div>
+
+<!-- ══════════════════════════════════════
+     LANDING PAGE
+══════════════════════════════════════ -->
+<div id="page-loader" class="page-loader">
+  <div class="loader-logo">ALL<span>FIT</span></div>
+</div>
+
+<nav class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="#" class="nav-logo" id="nav-logo">ALLFIT</a>
+    <div class="nav-links" id="nav-links"></div>
+    <button class="hamburger" id="hamburger" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu"></div>
+</nav>
+
+<section class="hero" id="inicio">
+  <div class="hero-bg" id="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="container">
+    <div class="hero-content" id="hero-content"></div>
+  </div>
+</section>
+
+<section class="value-section section-pad" id="valor">
+  <div class="container" id="value-container"></div>
+</section>
+
+<section class="pillars-section section-pad" id="pilares">
+  <div class="container" id="pillars-container"></div>
+</section>
+
+<section class="form-section section-pad" id="formulario">
+  <div class="container">
+    <div class="form-header" id="form-header"></div>
+    <div class="form-card">
+      <form id="lead-form" novalidate></form>
+      <div class="form-success" id="form-success"></div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonials-section section-pad" id="testimonios">
+  <div class="container" id="testimonials-container"></div>
+</section>
+
+<section class="cta-banner" id="cta-section">
+  <div class="container" id="cta-container"></div>
+</section>
+
+<footer class="footer" id="footer">
+  <div class="container" id="footer-container"></div>
+</footer>
+
+<button class="scroll-top" id="scroll-top" aria-label="Volver arriba">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
+
+<script src="/js/config.js"></script>
+<script src="/js/main.js"></script>
+
+<script>
+/* ── Admin panel oculto — solo localhost ── */
+(function () {
+  const isLocal = ['localhost','127.0.0.1'].includes(location.hostname);
+  if (!isLocal) return;
+
+  const overlay  = document.getElementById('admin-overlay');
+  const frame    = document.getElementById('admin-frame');
+  const closeBtn = document.getElementById('admin-close-btn');
+  const hotspot  = document.getElementById('admin-hotspot');
+  let loaded     = false;
+  let clicks = 0, clickTimer;
+
+  function openAdmin() {
+    if (!loaded) { frame.src = '/admin'; loaded = true; }
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeAdmin() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  /* Triple clic en esquina inferior-izquierda */
+  hotspot.addEventListener('click', () => {
+    clicks++;
+    clearTimeout(clickTimer);
+    clickTimer = setTimeout(() => { clicks = 0; }, 900);
+    if (clicks >= 3) { clicks = 0; openAdmin(); }
+  });
+
+  /* Cerrar con botón X */
+  closeBtn.addEventListener('click', closeAdmin);
+
+  /* Cerrar con ESC */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && overlay.classList.contains('open')) closeAdmin();
+  });
+
+  /* Cerrar haciendo clic en el fondo oscuro */
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) closeAdmin();
+  });
+
+  /* Recargar landing si el admin guardó cambios */
+  window.addEventListener('message', e => {
+    if (e.data === 'allfit:config-saved') {
+      closeAdmin();
+      setTimeout(() => location.reload(), 200);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
